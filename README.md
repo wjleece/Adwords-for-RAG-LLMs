@@ -7,7 +7,9 @@ The product dictionary contains product attributes, including URL.
 
 The OpenAI response is amended such that the product names in the response that match the names in the dictionary are returned as hyperlinked text. 
 
-Something like this would be the basis of monetizing LLMs through advertising. OpenAI might do this at some point, but Microsoft isn't really dependent on search revenues from Bing. 
+Something like this would be the basis of monetizing LLMs through advertising. 
+
+OpenAI might do this at some point, but Microsoft isn't really dependent on search revenues from Bing. 
 
 Google, though, is a different story. 
 
