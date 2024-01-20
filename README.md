@@ -21,8 +21,8 @@ So I expect to see "AdWords for Bard" soon.
 Next steps:
 
 1. Get all Nike shoe information, including reviews, available from the Amazon product API
-2. Use a RAG system (even though it might not strictly be necessary) to suppliment OpenAI's Nike product knowledge
-3. Ask detailed questions about the type of products you're interested in (gleaned from reveiws) and get suggestions w/ hyperlinks
+2. Use a RAG system to suppliment OpenAI's Nike product knowledge
+3. Ask detailed questions about the type of products you're interested in and get suggestions w/ hyperlinks
 4. Publish an API
 
 Longer term:
