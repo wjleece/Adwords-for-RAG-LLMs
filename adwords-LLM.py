@@ -3,6 +3,8 @@ import json
 import os
 import requests
 from difflib import get_close_matches
+from IPython.display import HTML
+
 
 # Define the OpenAI model to be used
 model = "gpt-4"
@@ -221,12 +223,12 @@ def linkify_response(response, hyperlink_mapping):
     response_with_breaks = response.replace('\n', '<br>')
 
     return response_with_breaks  # necessary when you are working in PyCharm,
-    # but this is best demonstrated in Collab by commenting out the line above and uncommenting the one below
-
+    # but this is best demonstrated in Colab by commenting out the line above and uncommenting the one below
     # return HTML(response_with_breaks) #this will work in Google Colab but not in PyCharm
+    
+    # for a working example, see: https://colab.research.google.com/drive/1AmWZln5B2flvqb1DrkUeQ2mMWLBmOdf1?usp=sharing
 
 
 # Using the hyperlink mapping from the previous step
 final_response = linkify_response(openai_response, hyperlink_match_dict)
-
 print(final_response)
