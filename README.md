@@ -16,3 +16,14 @@ Google, though, is a different story.
 I'm sure Bard will start doing this soon as LLMs are going to disrupt internet search and Google's main cash cow. 
 
 So I expect to see "AdWords for Bard" soon. 
+
+
+Next steps:
+
+1. Get all Nike shoe information available from the Amazon product API
+2. Use a RAG system (even though it might not strictly be necessary) to suppliment OpenAI's Nike product knowledge
+3. Publish an API for this
+
+Longer term:
+
+1. Build some type of interface that makes it really easy for non-technical users to upload files and/or include URLs as documents to the RAG system
