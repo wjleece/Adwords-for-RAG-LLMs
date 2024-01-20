@@ -1,12 +1,7 @@
 import openai  #I used v 1.0.0
 import json
 import os
-import random
-import re
 import requests
-import difflib
-from pathlib import Path
-from getpass import getpass
 
 # Define the OpenAI model to be used
 model = "gpt-4"
@@ -28,6 +23,8 @@ openai.api_key = read_file(api_key_file)
 url = 'https://raw.githubusercontent.com/wjleece/adwords-for-openai/main/shoe_data.json'
 
 response = requests.get(url)
+
+product_data= []
 
 if response.status_code == 200:
     product_data = json.loads(response.text)
@@ -106,6 +103,104 @@ response_product_dict={}
 for item in data:
     response_product_dict[item['product_name']] = item['description']
 
-print(response_product_dict)
+# print(response_product_dict)
 
-#print(type(response_product_dict))
+# print(type(response_product_dict))
+
+# print(response_product_dict.keys())
+
+# print(product_dict.keys())
+
+# Shizzoes! The method get_close_matches() espects a list. So I gotta convert some stuff. I wonder if there's an easier way to do this.
+from difflib import get_close_matches
+
+def find_similiar_products(response_product_dict, product_dict):
+
+  # Lowercase and listify the keys for product_dict
+  product_keys = [] #declare empty list
+  for key in product_dict.keys():
+      lowercased_key = key.lower()
+      product_keys.append(lowercased_key) #build full list
+
+  # Lowercase and listify the keys for response_product_dict
+  response_product_keys = [] #declare empty list
+  for key in response_product_dict.keys():
+      lowercased_key = key.lower()
+      response_product_keys.append(lowercased_key) #build full list
+
+  # Find the similar product matches
+  similar_matches = {}
+  for response_key in response_product_keys:
+      # Get close matches for each response_product_key in product_keys
+      matches = get_close_matches(response_key, product_keys, cutoff=0.95)  # Adjust cutoff as needed
+
+      # If there are matches, add the first match to the similar_matches dictionary
+      if matches:
+          similar_matches[response_key] = matches[0]
+
+  return similar_matches
+
+product_matches = find_similiar_products(response_product_dict, product_dict)
+
+#print(product_matches)
+
+def create_hyperlink_mapping(product_matches, product_dict):
+    """
+    Create a mapping of product names to their hyperlinked versions using the closest matches.
+
+    Args:
+    product_matches (dict): A dictionary of product name matches.
+    product_dict (dict): A dictionary of product names and their URLs.
+
+    Returns:
+    dict: A dictionary mapping product names to hyperlinked versions.
+    """
+    hyperlink_mapping = {}
+
+    # Creating a lower-cased mapping of product names from product_dict for easier access
+    product_dict_lower = {key.lower(): value for key, value in product_dict.items()}
+
+    # Iterate over product_matches
+    for product, matched_product in product_matches.items():
+        # Find the corresponding key in product_dict based on the matched product
+        matched_product_lower = matched_product.lower()
+        for key in product_dict_lower:
+            if matched_product_lower in key:
+                # Get the URL from the matched key in product_dict
+                url = product_dict_lower[key][1] #gets the second element in the dictionary, the URL. Recall that the first element is the product type (men's athletci or woomen's althetic)
+                # Create a hyperlink version of the product name using the original name from product_matches
+                hyperlink_mapping[product] = f'<a href="{url}">{product.title()}</a>'
+                break  # Stop searching once a match is found
+
+    return hyperlink_mapping
+
+
+hyperlink_match_dict = create_hyperlink_mapping(product_matches, product_dict)
+print(hyperlink_match_dict)
+#print(type(hyperlink_match_dict))
+
+def linkify_response(response, hyperlink_mapping):
+    """
+    Update the response text with hyperlinked product names, replace newline characters with HTML
+    line breaks, and return HTML display object.
+
+    Args:
+    response (str): The original response text.
+    hyperlink_mapping (dict): A dictionary mapping product names to hyperlinked versions.
+
+    Returns:
+    HTML: An HTML display object with the updated response.
+    """
+    for product, hyperlink in hyperlink_mapping.items():
+        response = response.replace(product.title(), hyperlink)
+
+    # Replace newline characters with HTML line breaks
+    response_with_breaks = response.replace('\n', '<br>')
+
+    return(response_with_breaks) # necessary when you are working in PyCharm, but this is best demonstrated in Collab by commenting out this line and uncommenting the one below
+    #return HTML(response_with_breaks) #this will work in Google Colab but not in PyCharm
+
+# Using the hyperlink mapping from the previous step
+final_response = linkify_response(openai_response, hyperlink_match_dict)
+
+print(final_response)
