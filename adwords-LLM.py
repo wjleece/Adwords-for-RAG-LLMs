@@ -1,4 +1,4 @@
-import openai  # I used v 1.0.0
+import openai  #using v 1.0.0
 import json
 import os
 import requests
@@ -63,7 +63,7 @@ def get_openai_response(prompt):
 
 prompt = "Can you recommend at least 10 good Nike athletic shoes? " \
          "Provide your response in a set of fluid sentences, not in a numbered list."
-# asking for fluid language vs a boring list to make the response more engaging
+# asking for fluid language vs dictionary-like list to make the response more engaging
 
 # Get response from OpenAI
 openai_response = get_openai_response(prompt)
@@ -72,8 +72,6 @@ openai_response = get_openai_response(prompt)
 # print(type(openai_response))
 
 # get product names and descriptions from OpenAI response.
-# This is necessary if OpenAI doesn't return the response in the form of a dictionary
-
 prompt = "Repeat your previous response, but get the product names " \
          "and description from your previous response in JSON format" \
          " using \"product_name\" as the key and \"description\" as the value. " \
@@ -86,14 +84,13 @@ prompt = "Repeat your previous response, but get the product names " \
          "You do not need to tell me when the JSON formatted section begins or ends" \
          " as I expect that to be clearly indicated with \"[\" and \"]\", respectively." \
          " To be clear, your previous response was: " + openai_response
-# we still need a dict, but once we get the hyperlink shit integrated
+# we still need a dict, but once we get the hyperlinks integrated
 # we'll weave that back into the 'natural' response above.
 openai_response_formatted = (get_openai_response(prompt))
 
 # print(openai_response_formatted)
 
 # print(type(openai_response_formatted)) #note that the response is JSON formatted but the data type is still string
-
 
 # now let's separate the text that contains product descriptions, so we can turn that into a response dictionary
 
@@ -108,7 +105,7 @@ openai_response_products = openai_response_formatted[json_start:json_end].strip(
 
 # print(type(openai_response_products))
 
-# openai_response_products is a string. json.loads() will convert it to a list of dictionaries.
+# openai_response_products is a string. json.loads() will convert it to a list of dictionaries
 # Not really sure why json.loads() doesn't just produce a single dictionary, will figure that out later
 data = json.loads(openai_response_products)
 
@@ -122,7 +119,6 @@ response_product_dict = {}
 for item in data:
     response_product_dict[item['product_name']] = item['description']
 
-
 # print(response_product_dict)
 
 # print(type(response_product_dict))
@@ -131,8 +127,8 @@ for item in data:
 
 # print(product_dict.keys())
 
-# Shizzoes! The method get_close_matches() expects a list. So I gotta convert some stuff.
-# I wonder if there's an easier way to do this.
+# The method get_close_matches() expects a list, so let's do some conversions
+# I wonder if there's an easier way to do this
 
 def find_similar_products(response_product_dict, product_dict):
     # Lowercase and listify the keys for product_dict
@@ -188,8 +184,7 @@ def create_hyperlink_mapping(product_matches, product_dict):
         for key in product_dict_lower:
             if matched_product_lower in key:
                 # Get the URL from the matched key in product_dict
-                url = product_dict_lower[key][
-                    1]  # gets the second element in the dictionary, the URL.
+                url = product_dict_lower[key][1]  # gets the second element in the dictionary, the URL.
                 # Recall that the first element is the product type (men's athletic or women's athletic)
                 # Create a hyperlink version of the product name using the original name from product_matches
                 hyperlink_mapping[product] = f'<a href="{url}">{product.title()}</a>'
@@ -197,21 +192,19 @@ def create_hyperlink_mapping(product_matches, product_dict):
 
     return hyperlink_mapping
 
-
 hyperlink_match_dict = create_hyperlink_mapping(product_matches, product_dict)
 print(hyperlink_match_dict)
 
-
 # print(type(hyperlink_match_dict))
 
-def linkify_response(response, hyperlink_mapping):
+def linkify_response(openai_response, hyperlink_mapping_dict):
     """
     Update the response text with hyperlinked product names, replace newline characters with HTML
     line breaks, and return HTML display object.
 
     Args:
-    response (str): The original response text.
-    hyperlink_mapping (dict): A dictionary mapping product names to hyperlinked versions.
+    openai_response (str): The original response text.
+    hyperlink_mapping_dict (dict): A dictionary mapping product names to hyperlinked versions.
 
     Returns:
     HTML: An HTML display object with the updated response.
