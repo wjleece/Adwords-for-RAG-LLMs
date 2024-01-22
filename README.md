@@ -1,7 +1,15 @@
 # adwords-for-openai
 A ready-to-run version of this (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1AmWZln5B2flvqb1DrkUeQ2mMWLBmOdf1
 
-Running this in PyCharm works fine except that PyCharm doesn't render hyperlinks easily (I didn't spend much time figuring out how that could be done), but hyperlinks render just fine in browswer environments like Google Colab (see link above). 
+Running this in PyCharm works fine except that PyCharm doesn't render hyperlinks easily (I didn't spend much time figuring out how that could be done), but hyperlinks render just fine in browswer environments like Google Colab (see link above).
+
+You'll see there's a minor difference in the Colab version of this code with what's here on Github in that the:
+
+linkify_response 
+
+function in Colab amended to include:
+
+return HTML(response_with_breaks) 
 
 
 # Summary and to-dos
