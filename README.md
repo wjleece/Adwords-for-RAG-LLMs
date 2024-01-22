@@ -1,4 +1,10 @@
 # adwords-for-openai
+A ready-to-run version of this (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1AmWZln5B2flvqb1DrkUeQ2mMWLBmOdf1
+
+Running this in PyCharm works fine except that PyCharm doesn't render hyperlinks easily (I didn't spend much time figuring out how that could be done), but hyperlinks render just fine in browswer environments like Google Colab (see link above). 
+
+
+# Summary and to-dos
 Matching products from OpenAI responses to a product dictionary containing URLs.
 
 This is a demo that takes a response from an LLM (in this case OpenAI, because I'm somewhat familiar with its API) and looks up any product information in a product dictionary. 
