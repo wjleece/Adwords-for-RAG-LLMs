@@ -24,7 +24,9 @@ openai.organization = read_file(org_id_file)
 openai.api_key = read_file(api_key_file)
 
 # Add product dictionary file here
-url = 'https://raw.githubusercontent.com/wjleece/adwords-for-openai/main/shoe_data.json'
+# For details about how this dictionary was created and cleanded, see https://colab.research.google.com/drive/1pAzjvfYh5fKkzPKVDpsFyjB8IknBPGPL#scrollTo=bEjEcNtrYxAl
+
+url = 'https://raw.githubusercontent.com/wjleece/adwords-for-LLMs/main/cleaned_product_data.json'
 
 response = requests.get(url)
 
@@ -147,7 +149,7 @@ def find_similar_products(response_product_dict, product_dict):
     similar_matches = {}
     for response_key in response_product_keys:
         # Get close matches for each response_product_key in product_keys
-        matches = get_close_matches(response_key, product_keys, cutoff=0.95)  # Adjust cutoff as needed
+        matches = get_close_matches(response_key, product_keys, cutoff=0.65)  # Adjust cutoff as needed
 
         # If there are matches, add the first match to the similar_matches dictionary
         if matches:
