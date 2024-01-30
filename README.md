@@ -1,5 +1,5 @@
 # adwords-for-LLMs
-A ready-to-run version of this with OpenAI (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1AmWZln5B2flvqb1DrkUeQ2mMWLBmOdf1
+A ready-to-run version of this with OpenAI (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1vl0-w_87c_wtAE9cLXTOlRabnwkBsk2R#scrollTo=C6sr4Wwu1Z5C
 
 Running this in PyCharm works fine except that PyCharm doesn't render hyperlinks easily (I didn't spend much time figuring out how that could be done), but hyperlinks render just fine in browswer environments like Google Colab (see link above).
 
