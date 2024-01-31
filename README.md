@@ -6,7 +6,7 @@ OpenAI seems to be doing well monetizing GPT by building a centralized platform,
 
 I expect to see "AdWords for Bard" and some equivalent on Perplexity coming soon.
 
-A ready-to-run version of this with OpenAI (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1vl0-w_87c_wtAE9cLXTOlRabnwkBsk2R#scrollTo=C6sr4Wwu1Z5C
+A ready-to-run version of this with OpenAI (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1vl0-w_87c_wtAE9cLXTOlRabnwkBsk2R
 
 # What this code does
 
