@@ -10,9 +10,12 @@ A ready-to-run version of this using gpt-4 (you just supply your OpenAI API key)
 
 If you run this on a Google Colab GPU insteand of a CPU, it's significantly faster - one of the many reasons I prefer Colab vs. running this locally in PyCharm. 
 
+Going forward, I'm also more likely to update the Colab notebook vs. what I have here.
+
 I haven't made this Colab notebook public, but I'm happy to share with you if you contact me.
 
-# What Adwords-for-RAG-LLMs.py does
+
+# Description of Adwords-for-RAG-LLMs.py
 
 1. Ingests product information and product review data from Amazon (currently limited to Nike shoes with reviews from Jan 1, 2022 until mid Jan 2024) --> note that Amazon URLs may change so as get further from Jan 2024, landing pages are more likely to 'break'
 2. Creates a product dictionary of the product + review data
@@ -23,6 +26,6 @@ I haven't made this Colab notebook public, but I'm happy to share with you if yo
 7. Puts together a full response with the now hyperlinked product names
 8. Creates an external API on Gradio so this tool can be shared  
 
-Next steps:
+# Next steps
 
 1. Build some type of user interface that makes it really easy for non-technical users to upload files and/or include URLs as documents to the RAG system
