@@ -1,25 +1,17 @@
-import openai  # I used v 1.0.0
 import json
 import os
-import re
 import pandas as pd
 import requests
 import gradio as gr
-from IPython.display import HTML
-from getpass import getpass
-import langchain_community
 from langchain_community.document_loaders.csv_loader import CSVLoader
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.document_loaders import TextLoader
 from langchain_community.chat_models import ChatOpenAI
-from langchain_community.llms import OpenAI
 from langchain.chains import LLMChain
 from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 
 # Define the OpenAI model to be used
 model = "gpt-4"
-
 
 # Get org ID & API key from files
 script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the absolute path of the script
@@ -31,7 +23,6 @@ with open(api_key_file, "r") as file:
 
 # Set the environment variable
 os.environ["OPENAI_API_KEY"] = api_key
-
 
 url = 'https://raw.githubusercontent.com/wjleece/adwords-for-LLMs/main/updated_Amazon_reviews_batch_all.json'  # JSON
 # formatted data
@@ -86,7 +77,7 @@ for i in range(len(data)):
     total_word_count = total_word_count + word_count
 
 #print (f'You have {len(data)} review(s) in your data')
-#print (f'There are {total_word_count} words in total in all of the reviews')
+#print (f'There are {total_word_count} words in total in all the reviews')
 
 # Only run this once per session as it can get expensive
 embeddings = OpenAIEmbeddings()
@@ -278,6 +269,7 @@ def main():
                                     )
 
   nike_product_search.launch(share=True)
+
 
 if __name__ == "__main__":
     main()
