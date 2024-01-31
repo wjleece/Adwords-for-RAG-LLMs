@@ -29,3 +29,4 @@ I haven't made this Colab notebook public, but I'm happy to share with you if yo
 # Next steps
 
 1. Build some type of user interface that makes it really easy for non-technical users to upload files and/or include URLs as documents to the RAG system
+2. Update the model so it can handle follow up questions
