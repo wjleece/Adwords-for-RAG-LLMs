@@ -8,6 +8,8 @@ I expect to see "AdWords for Bard" and some equivalent on Perplexity coming soon
 
 A ready-to-run version of this with OpenAI (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1vl0-w_87c_wtAE9cLXTOlRabnwkBsk2R
 
+I haven't made this notebook public, but I'm happy to share with you if you contact me.
+
 # What this code does
 
 1. Ingests product information and product review data from Amazon (currently limited to Nike shoes with reviews from Jan 1, 2022 until mid Jan 2024) --> note that Amazon URLs may change so as get further from Jan 2024, landing pages are more likely to 'break'
