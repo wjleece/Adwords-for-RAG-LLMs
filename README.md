@@ -8,7 +8,9 @@ I expect to see "AdWords for Bard" and some equivalent on Perplexity coming soon
 
 A ready-to-run version of this using gpt-4 (you just supply your OpenAI API key) exists at: https://colab.research.google.com/drive/1vl0-w_87c_wtAE9cLXTOlRabnwkBsk2R
 
-I haven't made this notebook public, but I'm happy to share with you if you contact me.
+If you run this on a Google Colab GPU insteand of a CPU, it's significantly faster - one of the many reasons I prefer Colab vs. running this locally in PyCharm. 
+
+I haven't made this Colab notebook public, but I'm happy to share with you if you contact me.
 
 # What Adwords-for-RAG-LLMs.py does
 
