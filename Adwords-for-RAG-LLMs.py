@@ -80,7 +80,10 @@ for i in range(len(data)):
 #print (f'There are {total_word_count} words in total in all the reviews')
 
 # Only run this once per session as it can get expensive
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+#embeddings = OpenAIEmbeddings(model="text-embedding-3-small") #use this in the future as its cheaper; currently there's a formatting issue with the hyperlinks with this model
+
 db = FAISS.from_documents(data, embeddings) #generates embeddings for each document in data using the OpenAIEmbeddings instance and then indexes these embeddings using FAISS
 
 #Create RAG Response Function Returning JSON Formatted Data + Response Quality Function
@@ -168,6 +171,10 @@ def create_response_tuple(rag_response_text):
 
 # Create Hyperlinks and Insert into OpenAI response
 
+# This works well with text-embedding-ada-002 but less well with text-embedding-3-small.
+# This is undoubtedly due to some formatting nuances that I'll figure out later
+# text-embedding-3-small is cheaper than text-embedding-ada-002 so I should use it
+
 def create_hyperlink_mapping(response_product_dict, product_and_review_dict):
     """
     Create a mapping of product names to their hyperlinked versions using the closest matches.
@@ -228,7 +235,6 @@ def linkify_response_for_gradio(response_product_dict, hyperlink_match_dict):
 
 
 def main():
-
   def greet(query):
 
       # Step 1: Get OpenAI response
@@ -269,7 +275,6 @@ def main():
                                     )
 
   nike_product_search.launch(share=True)
-
 
 if __name__ == "__main__":
     main()
