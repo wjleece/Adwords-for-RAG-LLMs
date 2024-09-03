@@ -1,17 +1,20 @@
 import json
 import os
+import re
 import pandas as pd
 import requests
 import gradio as gr
-from langchain_community.document_loaders.csv_loader import CSVLoader
+from IPython.display import HTML
+from getpass import getpass
+from langchain_community.document_loaders import CSVLoader
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
-from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain_openai import OpenAI
+from langchain_community.vectorstores import FAISS
 
 # Define the OpenAI model to be used
-model = "gpt-4"
+model = "gpt-4o"
 
 # Get org ID & API key from files
 script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the absolute path of the script
@@ -92,55 +95,51 @@ query = "What are some great Nike running shoes that customers love?"
 #I only have this here as a seeding input, so that the functions below can successfully initialize so that you can then run greet().
 #This item only needs to be run once per session as once functions are initialized, the greet() function will execute taking the 'actual customer query'
 
-def get_rag_response_from_query(db, query, k=5): #tune this as needed
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema import StrOutputParser
 
-  reviews = db.similarity_search(query, k=k)
+def get_rag_response_from_query(db, query, k=5):
+    # Similarity search
+    reviews = db.similarity_search(query, k=k)
+    review_content = " ".join([r.page_content for r in reviews])
 
-  review_content = " ".join([r.page_content for r in reviews])
+    # Initialize ChatOpenAI with gpt-4o
+    llm = ChatOpenAI(model_name="gpt-4o", temperature=0.5)
 
-  llm = ChatOpenAI(model_name="gpt-4",temperature=0.5)
+    # Main prompt
+    prompt = ChatPromptTemplate.from_template("""
+    You are a bot has specialized knowledge of Nike shoes, which you have obtained from Nike shoe customer review data from Amazon that has been provided to you.
+    When you are asked questions about Nike shoes, make sure to mention specific key phrases from the reviews that you have access to, as long as that information
+    is relevant to the question asked. Return the response in the form of an introduction, a recommendation section, and a conclusion.
+    Return the data in the recommendation section in JSON format using "product_name" as the key and "description" as the value.
+    You do not need to tell me when the JSON formatted section begins or ends as I expect that to be clearly indicated with "[" and "]", respectively.
+    Similarly you do not need to tell me what the intro is and what the conclusion is as it will precede and follow the "[" and "]", respectively.
 
-  prompt = PromptTemplate(
-        input_variables=["question", "docs"],
-        template="""
-        You are a bot has specialized knowledge of Nike shoes, which you have obtained from Nike shoe customer review data from Amazon that has been provided to you.
-        When you are asked questions about Nike shoes, make sure to mention specific key phrases from the reviews that you have access to, as long as that information
-        is relevant to the question asked. Return the response in the form of an introduction, a recommendation section, and a conclusion.
-        Return the data in the recommendation section in JSON format using \"product_name\" as the key and \"description\" as the value.
-        You do not need to tell me when the JSON formatted section begins or ends as I expect that to be clearly indicated with \"[\" and \"]\", respectively.
-        Similarly you do not need to tell me what the intro is and what the conclusion is as it will precede and follow the \"[\" and \"]\", respectively."
+    Answer the following question: {question}
+    By searching the following articles: {docs}
 
-        Answer the following question: {question}
-        By searching the following articles: {docs}
+    If the question is not related to the information in the Nike shoe customer review data from Amazon
+    that you have been given access to, respond that you have expertise in Nike shoes but not on the topic the user has asked.
+    """)
 
-        If the question is not related to the information in the Nike shoe customer review data from Amazon
-        that you have been given access to, respond that you have expertise in Nike shoes but not on the topic the user has asked.
+    # Create and invoke chain
+    chain = prompt | llm | StrOutputParser()
+    rag_response_text = chain.invoke({"question": query, "docs": review_content})
 
-        """
-    )
+    # Evaluation prompt
+    prompt_eval = ChatPromptTemplate.from_template("""
+    You job is to evaluate if the response to a given context is faithful for the following: {answer}
+    By searching the following reviews: {docs}
+    Give a reason why they are similar or not, start with a Yes or a No.
+    """)
 
-  chain = LLMChain(llm=llm, prompt=prompt) #LLMChain enables saving of context/knowledge of previous responses. Soon to be deprecated, find a good replacement
+    # Create and invoke evaluation chain
+    chain_part_2 = prompt_eval | llm | StrOutputParser()
+    evals = chain_part_2.invoke({"answer": rag_response_text, "docs": review_content})
 
-  response = chain.run(question=query, docs=review_content, return_source_documents=True)
-  rag_response_text = str(response)
-
-  prompt_eval = PromptTemplate(
-          input_variables=["answer", "docs"],
-          template="""
-          You job is to evaluate if the response to a given context is faithful for the following: {answer}
-          By searching the following reviews: {docs}
-
-          Give a reason why they are similar or not, start with a Yes or a No.
-
-          """
-      )
-
-  chain_part_2 = LLMChain(llm=llm, prompt=prompt_eval)
-
-  evals = chain_part_2.run(answer=rag_response_text, docs=review_content)
-
-  return rag_response_text, review_content, evals
-
+    return rag_response_text, review_content, evals
+    
 rag_response_text, review_content, evals = get_rag_response_from_query(db, query)
 
 # Create OpenAI Response Dictionary from RAG Response for Later Hyperlinking; Separate JSON Response from Intro and Conclusion.
